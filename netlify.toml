@@ -1,0 +1,17 @@
+[build]
+  publish = "."
+  command = ""
+
+[functions]
+  directory = "netlify/functions"
+
+# The front end needs no build step. Netlify deploys index.html from the root
+# and bundles the server-side Trust Lens AI function above.
+#
+# Both Netlify Forms (#seForm and #eaForm) need:
+#   - a `data-netlify="true"` attribute on the <form> tag
+#   - a hidden <input type="hidden" name="form-name" value="...">
+# matching the form's name. Netlify detects forms at build/deploy time by
+# scanning the static HTML, so this only works if the form markup is
+# present in index.html as-is (it currently is) — don't move these forms
+# into JS-only, dynamically injected markup, or Netlify won't see them.

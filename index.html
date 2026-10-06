@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Lens — ICA Pro Hub</title>
+<meta name="description" content="Paste an AI answer and see which parts are worth a second look, and what to ask next.">
+<meta name="theme-color" content="#081117">
+<link rel="canonical" href="https://trustlens.idealclientalliance.com/">
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+
+<!-- Social preview (Open Graph / Twitter Card). IMPORTANT: og:url and
+     og:image must be absolute URLs once this is live, or most platforms
+     (Slack, iMessage, LinkedIn, etc.) won't reliably pick up the preview
+     image. Update the domain below once trustlens.idealclientalliance.com
+     is actually live — see HANDOVER.md, "Known placeholders." -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Trust Lens — Look twice before you trust.">
+<meta property="og:description" content="Paste an AI answer and see which parts are worth a second look, and what to ask next.">
+<meta property="og:image" content="https://trustlens.idealclientalliance.com/assets/og-image-ai.png">
+<meta property="og:url" content="https://trustlens.idealclientalliance.com/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Trust Lens — Look twice before you trust.">
+<meta name="twitter:description" content="Paste an AI answer and see which parts are worth a second look, and what to ask next.">
+<meta name="twitter:image" content="https://trustlens.idealclientalliance.com/assets/og-image-ai.png">
+<!-- Trust Lens uses a server-side AI endpoint. Never place an API key in
+     this HTML or in js/script.js; see HANDOVER.md for deployment details. -->
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <span class="wordmark">ICA <span>·</span> Trust Lens</span>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">Look twice before you trust</span>
+    <h1>"AI can make mistakes." <span class="accent">This is how you actually check.</span></h1>
+    <p class="lede">
+      Every chat ends with that warning.<br>
+      Nobody ever acts on it — nobody's ever been shown how.<br>
+      Paste it below. Trust Lens reads the actual answer and shows you what deserves a second look.
+    </p>
+    <ul class="meta-strip">
+      <li>✨ Reads the full answer</li>
+      <li>🔐 Secure AI analysis</li>
+      <li>🆓 Free to check</li>
+    </ul>
+  </section>
+
+  <section class="tool" aria-label="Trust Lens conversation">
+    <div class="conversation" id="conversation" aria-live="polite">
+      <div class="conversation-empty" id="conversationEmpty">
+        <span class="response-avatar" aria-hidden="true">TL</span>
+        <div>
+          <strong>Drop in the AI answer.</strong>
+          <p>I'll show you only the most important things it may have missed.</p>
+        </div>
+      </div>
+
+      <div class="submitted-answer" id="submittedAnswer" hidden>
+        <span>You pasted</span>
+        <p id="submittedPreview"></p>
+      </div>
+
+      <div class="results" id="results" tabindex="-1" hidden>
+      <div class="response-head">
+        <span class="response-avatar" aria-hidden="true">TL</span>
+        <div>
+          <span class="response-name">Trust Lens</span>
+          <span class="response-state" id="responseState">Looking for the important misses</span>
+        </div>
+      </div>
+
+      <div class="analysis-loading" id="analysisLoading" role="status" hidden>
+        <span>Looking twice</span>
+        <span class="thinking-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+
+      <div class="analysis-content" id="analysisContent" hidden>
+        <p class="analysis-verdict" id="analysisVerdict"></p>
+        <ul class="quick-hits" id="quickHits"></ul>
+        <div class="clear-answer" id="clearAnswer" hidden>
+          <span class="clear-icon" aria-hidden="true">✓</span>
+          <p>Nothing obvious jumps out. Still verify anything important before acting on it.</p>
+        </div>
+
+        <div class="response-actions" id="responseActions">
+          <button type="button" class="deeper-btn" id="deeperBtn">Go deeper</button>
+          <span>Full audit for ICA Pro Hub members</span>
+        </div>
+      </div>
+
+      <div class="analysis-error" id="analysisError" role="alert" hidden>
+        <p id="analysisErrorText">Trust Lens couldn't analyze that answer right now.</p>
+        <button type="button" class="retry-btn" id="retryBtn">Try again</button>
+      </div>
+      </div>
+    </div>
+
+    <div class="composer">
+      <label class="sr-only" for="input">Paste what ChatGPT or Claude gave you</label>
+      <textarea id="input" placeholder="Paste the AI answer here..." maxlength="12000" rows="4" spellcheck="true" aria-describedby="inputMeta"></textarea>
+      <div class="composer-footer" id="inputMeta">
+        <button type="button" class="example-link" id="exampleBtn">Try an example</button>
+        <div class="composer-controls">
+          <span id="characterCount">0 / 12,000</span>
+          <button type="button" class="send-btn" id="checkBtn" aria-label="Check this answer">↑</button>
+        </div>
+      </div>
+    </div>
+    <p class="composer-hint">Press <kbd>⌘</kbd> + <kbd>Enter</kbd> to send</p>
+  </section>
+
+  <div class="ea-reopen" id="eaReopen" hidden>
+    <span id="eaReopenText">Your early-access offer is still open — <span id="eaReopenTimer">00:00:00</span> left.</span>
+    <button type="button" class="ea-reopen-btn" id="eaReopenBtn">Reopen it</button>
+  </div>
+
+  <section class="standing-email">
+    <h2 class="se-headline">More free tools like this, on their way.</h2>
+    <p class="se-body">We're building more of these for people running real businesses with AI. Drop your email and we'll let you know the moment a new one's live.</p>
+    <form class="se-form" id="seForm" name="standing-email" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="standing-email">
+      <p class="hp-field" aria-hidden="true"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <label class="sr-only" for="seEmail">Email address</label>
+      <input type="email" id="seEmail" name="email" placeholder="you@business.com" autocomplete="email" inputmode="email" required>
+      <button type="submit" class="btn-ghost">Keep me posted</button>
+    </form>
+  </section>
+
+</div>
+
+<div class="member-gate-overlay" id="memberGateOverlay" hidden>
+  <div class="member-gate-modal" role="dialog" aria-modal="true" aria-labelledby="memberGateTitle" aria-describedby="memberGateBody" tabindex="-1">
+    <button type="button" class="member-gate-close" id="memberGateClose" aria-label="Close">&times;</button>
+    <span class="member-gate-badge">ICA Pro Hub members</span>
+    <h2 id="memberGateTitle">Go deeper with the full audit.</h2>
+    <p id="memberGateBody">The deeper review checks evidence gaps, hidden assumptions, contradictions, and gives you the exact questions to ask next.</p>
+    <form class="member-gate-form" id="memberGateForm" name="member-gate" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="member-gate">
+      <p class="hp-field" aria-hidden="true"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <label class="sr-only" for="memberGateEmail">Email address</label>
+      <input type="email" id="memberGateEmail" name="email" placeholder="you@business.com" autocomplete="email" inputmode="email" required>
+      <button type="submit" class="member-upgrade-btn" id="memberUpgradeBtn">Continue to upgrade &rarr;</button>
+    </form>
+    <p class="member-existing"><strong>Already a member?</strong> Open Trust Lens from inside your ICA Pro Hub dashboard.</p>
+  </div>
+</div>
+
+<div class="ea-overlay" id="eaOverlay" hidden>
+  <div class="ea-modal" role="dialog" aria-modal="true" aria-labelledby="eaHeadline" aria-describedby="eaBody" tabindex="-1">
+    <button type="button" class="ea-close" id="eaClose" aria-label="Close">&times;</button>
+    <p class="ea-eyebrow">Just for you, right now</p>
+    <h2 class="ea-headline" id="eaHeadline">You've checked three answers. Here's the offer.</h2>
+    <p class="ea-body" id="eaBody">Twenty dollars a month gets you the full audit on every answer &mdash; evidence gaps, hidden assumptions, contradictions, and the exact questions to ask next. Plus monthly coaching, masterclasses, and every new AI tool we release after this, already included, locked in before public pricing kicks in.</p>
+    <p class="ea-countdown"><span id="eaTimer">24:00:00</span> <span class="ea-countdown-label">left to lock this in</span></p>
+    <form class="ea-form" id="eaForm" name="early-access" method="POST" data-netlify="true" data-netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="early-access">
+      <p class="hp-field" aria-hidden="true"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <label class="sr-only" for="eaEmail">Email address</label>
+      <input type="email" id="eaEmail" name="email" placeholder="you@business.com" autocomplete="email" inputmode="email" required>
+      <button type="submit" class="btn-primary">Email me the link</button>
+    </form>
+    <p class="ea-form-hint">We'll send it straight to your inbox — the clock keeps running until you actually claim it.</p>
+    <a href="https://stan.store/lrmobi/p/the-ica-pro-blueprint" class="ea-direct-link" id="eaDirectLink">Not going to wait &mdash; take me straight to the offer &rarr;</a>
+  </div>
+</div>
+
+<script src="js/script.js" defer></script>
+</body>
+</html>
